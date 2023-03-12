@@ -38,7 +38,7 @@ public class Test {
         $("#clear-completed").click();
         $$("#todo-list>li").shouldHave(exactTexts("a","c edited"));
 
-        $(byXpath("//*[@id='todo-list']//li[.//text()='c edited']//*[@class='toggle']")).hover();
+        $$("#todo-list>li").findBy(text("c edited")).hover();
         $(byXpath("//*[@id='todo-list']//li[.//text()='c edited']//*[@class='destroy']")).click();
         $$("#todo-list>li").shouldHave(exactTexts("a"));
     }
