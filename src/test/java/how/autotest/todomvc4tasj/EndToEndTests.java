@@ -17,31 +17,31 @@ public class EndToEndTests {
                 "return $._data($('#new-todo').get(0), 'events').hasOwnProperty('keyup');"));
 
         add("a","b","c");
-        toDosShouldHave("a","b","c");
+        todosShouldHave("a","b","c");
 
-        edit("c"," edited").pressEnter();
-        edit("c edited"," edited again").pressEscape();
+        startEdit("c"," edited").pressEnter();
+        startEdit("c edited"," edited again").pressEscape();
 
         toDoBy(exactText("c edited")).$(".toggle").click();
         $("#clear-completed").click();
-        toDosShouldHave("a","b");
+        todosShouldHave("a","b");
 
         toDoBy(exactText("b")).hover().$(".destroy").click();
-        toDosShouldHave("a");
+        todosShouldHave("a");
     }
-    private final ElementsCollection toDoList = $$("#todo-list>li");
+    private final ElementsCollection todoList = $$("#todo-list>li");
     private void add(String... texts) {
         for (String text: texts) {
             $("#new-todo").append(text).pressEnter();
         }
     }
-    private void toDosShouldHave(String... texts) {
-        toDoList.shouldHave(exactTexts(texts));
+    private void todosShouldHave(String... texts) {
+        todoList.shouldHave(exactTexts(texts));
     }
     private SelenideElement toDoBy(Condition condition) {
-        return toDoList.findBy(condition);
+        return todoList.findBy(condition);
     }
-    private SelenideElement edit(String text, String textToAdd) {
+    private SelenideElement startEdit(String text, String textToAdd) {
         toDoBy(exactText(text)).doubleClick();
         return toDoBy(cssClass("editing")).$(".edit").append(textToAdd);
     }
