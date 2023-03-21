@@ -22,11 +22,11 @@ public class EndToEndTests {
         startEdit("c"," edited").pressEnter();
         startEdit("c edited"," edited again").pressEscape();
 
-        toDoBy(exactText("c edited")).$(".toggle").click();
-        $("#clear-completed").click();
+        complete("c edited");
+        clearCompleted();
         todosShouldHave("a","b");
 
-        toDoBy(exactText("b")).hover().$(".destroy").click();
+        delete("b");
         todosShouldHave("a");
     }
     private final ElementsCollection todoList = $$("#todo-list>li");
@@ -38,11 +38,19 @@ public class EndToEndTests {
     private void todosShouldHave(String... texts) {
         todoList.shouldHave(exactTexts(texts));
     }
-    private SelenideElement toDoBy(Condition condition) {
-        return todoList.findBy(condition);
-    }
     private SelenideElement startEdit(String text, String textToAdd) {
-        toDoBy(exactText(text)).doubleClick();
-        return toDoBy(cssClass("editing")).$(".edit").append(textToAdd);
+        todoList.findBy(exactText(text)).doubleClick();
+
+        return todoList.findBy(cssClass("editing"))
+                .$(".edit").append(textToAdd);
+    }
+    private void clearCompleted(){
+        $("#clear-completed").click();
+    }
+    private void complete(String text){
+        todoList.findBy(exactText(text)).$(".toggle").click();
+    }
+    private void delete(String text){
+        todoList.findBy(exactText(text)).hover().$(".destroy").click();
     }
 }
