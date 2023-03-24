@@ -29,30 +29,40 @@ public class EndToEndTests {
         delete("b");
         todosShouldBe("a");
     }
+    private final SelenideElement todoNew = $("#new-todo");
     private final ElementsCollection todoList = $$("#todo-list>li");
+    private final SelenideElement btnClearCompleted = $("#clear-completed");
     private void add(String... texts) {
         for (String text: texts) {
-            $("#new-todo").append(text).pressEnter();
+            todoNew.append(text).pressEnter();
         }
     }
     private void todosShouldBe(String... texts) {
         todoList.shouldHave(exactTexts(texts));
     }
+    private SelenideElement todoBy(Condition condition){
+        return todoList.findBy(condition);
+    }
+    private SelenideElement byText(String text){
+        return todoBy(exactText(text));
+    }
+    private SelenideElement startEdit(String text, String textToAdd){
+        byText(text).doubleClick();
+        return todoBy(cssClass("editing")).$(".edit").append(textToAdd);
+    }
     private void edit(String text, String textToAdd) {
-        todoList.findBy(exactText(text)).doubleClick();
-        todoList.findBy(cssClass("editing")).$(".edit").append(textToAdd).pressEnter();
+        startEdit(text, textToAdd).pressEnter();
     }
     private void cancelEdit(String text, String textToAdd) {
-        todoList.findBy(exactText(text)).doubleClick();
-        todoList.findBy(cssClass("editing")).$(".edit").append(textToAdd).pressEscape();
+        startEdit(text, textToAdd).pressEscape();
     }
     private void clearCompleted(){
-        $("#clear-completed").click();
+        btnClearCompleted.click();
     }
     private void complete(String text){
-        todoList.findBy(exactText(text)).$(".toggle").click();
+        byText(text).$(".toggle").click();
     }
     private void delete(String text){
-        todoList.findBy(exactText(text)).hover().$(".destroy").click();
+        byText(text).hover().$(".destroy").click();
     }
 }
