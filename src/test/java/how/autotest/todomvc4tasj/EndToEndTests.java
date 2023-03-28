@@ -1,28 +1,30 @@
 package how.autotest.todomvc4tasj;
 
 import com.codeborne.selenide.*;
+import how.autotest.todomvc4tasj.common.selenide.Action;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import static com.codeborne.selenide.CollectionCondition.*;
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.Configuration.*;
 
 public class EndToEndTests {
     @Test
     void todoListBasicOperations(){
-        Configuration.browser = "firefox";
-        open("https://todomvc4tasj.herokuapp.com/");
-        Wait().until(ExpectedConditions.jsReturnsValue(
-                "return $._data($('#new-todo').get(0), 'events').hasOwnProperty('keyup');"));
+        timeout = 6000;
+        fastSetValue = true;
+
+        openPage("firefox");
 
         add("a","b","c");
         todosShouldBe("a","b","c");
 
-        edit("c"," edited");
-        cancelEdit("c edited"," edited again");
+        edit("c","c edited");
+        cancelEdit("c edited","c edited again");
 
-        complete("c edited");
+        toggle("c edited");
         clearCompleted();
         todosShouldBe("a","b");
 
@@ -32,6 +34,12 @@ public class EndToEndTests {
     private final SelenideElement todoNew = $("#new-todo");
     private final ElementsCollection todoList = $$("#todo-list>li");
     private final SelenideElement btnClearCompleted = $("#clear-completed");
+    private void openPage(String text){
+        browser = text;
+        open("https://todomvc4tasj.herokuapp.com/");
+        Wait().until(ExpectedConditions.jsReturnsValue(
+                "return $._data($('#new-todo').get(0), 'events').hasOwnProperty('keyup');"));
+    }
     private void add(String... texts) {
         for (String text: texts) {
             todoNew.append(text).pressEnter();
@@ -40,15 +48,13 @@ public class EndToEndTests {
     private void todosShouldBe(String... texts) {
         todoList.shouldHave(exactTexts(texts));
     }
-    private SelenideElement todoBy(Condition condition){
-        return todoList.findBy(condition);
-    }
-    private SelenideElement byText(String text){
-        return todoBy(exactText(text));
+    private SelenideElement todoByText(String text){
+        return todoList.findBy(exactText(text));
     }
     private SelenideElement startEdit(String text, String textToAdd){
-        byText(text).doubleClick();
-        return todoBy(cssClass("editing")).$(".edit").append(textToAdd);
+        todoByText(text).doubleClick();
+        return todoList.findBy(cssClass("editing")).$(".edit")
+                .execute(Action.JS.setValue(textToAdd));
     }
     private void edit(String text, String textToAdd) {
         startEdit(text, textToAdd).pressEnter();
@@ -59,10 +65,10 @@ public class EndToEndTests {
     private void clearCompleted(){
         btnClearCompleted.click();
     }
-    private void complete(String text){
-        byText(text).$(".toggle").click();
+    private void toggle(String text){
+        todoByText(text).$(".toggle").click();
     }
     private void delete(String text){
-        byText(text).hover().$(".destroy").click();
+        todoByText(text).hover().$(".destroy").click();
     }
 }
