@@ -13,10 +13,11 @@ import static com.codeborne.selenide.Configuration.*;
 public class EndToEndTests {
     @Test
     void todoListBasicOperations(){
+        browser = "firefox";
         timeout = 6000;
         fastSetValue = true;
 
-        openPage("firefox");
+        openPage();
 
         add("a","b","c");
         todosShouldBe("a","b","c");
@@ -34,8 +35,7 @@ public class EndToEndTests {
     private final SelenideElement todoNew = $("#new-todo");
     private final ElementsCollection todoList = $$("#todo-list>li");
     private final SelenideElement btnClearCompleted = $("#clear-completed");
-    private void openPage(String text){
-        browser = text;
+    private void openPage(){
         open("https://todomvc4tasj.herokuapp.com/");
         Wait().until(ExpectedConditions.jsReturnsValue(
                 "return $._data($('#new-todo').get(0), 'events').hasOwnProperty('keyup');"));
