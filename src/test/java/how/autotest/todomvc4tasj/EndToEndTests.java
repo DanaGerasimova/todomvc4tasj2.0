@@ -2,21 +2,17 @@ package how.autotest.todomvc4tasj;
 
 import com.codeborne.selenide.*;
 import how.autotest.todomvc4tasj.common.selenide.Action;
+import how.autotest.todomvc4tasj.testconfigs.BaseTest;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import static com.codeborne.selenide.CollectionCondition.*;
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
-import static com.codeborne.selenide.Configuration.*;
 
-public class EndToEndTests {
+public class EndToEndTests extends BaseTest {
     @Test
     void todoListBasicOperations(){
-        browser = "firefox";
-        timeout = 6000;
-        fastSetValue = true;
-
         openPage();
 
         add("a","b","c");
@@ -36,7 +32,8 @@ public class EndToEndTests {
     private final ElementsCollection todoList = $$("#todo-list>li");
     private final SelenideElement btnClearCompleted = $("#clear-completed");
     private void openPage(){
-        open("https://todomvc4tasj.herokuapp.com/");
+        String baseUrl = System.getProperty("baseUrl");
+        open(baseUrl);
         Wait().until(ExpectedConditions.jsReturnsValue(
                 "return $._data($('#new-todo').get(0), 'events').hasOwnProperty('keyup');"));
     }
