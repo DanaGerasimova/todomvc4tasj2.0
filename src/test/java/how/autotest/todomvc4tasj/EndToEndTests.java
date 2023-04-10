@@ -32,8 +32,7 @@ public class EndToEndTests extends BaseTest {
     private final ElementsCollection todoList = $$("#todo-list>li");
     private final SelenideElement btnClearCompleted = $("#clear-completed");
     private void openPage(){
-        String baseUrl = System.getProperty("baseUrl");
-        open(baseUrl);
+        open("/");
         Wait().until(ExpectedConditions.jsReturnsValue(
                 "return $._data($('#new-todo').get(0), 'events').hasOwnProperty('keyup');"));
     }

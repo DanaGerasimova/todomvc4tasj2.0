@@ -17,8 +17,5 @@ dependencies {
 
 test {
     useJUnitPlatform()
-}
-
-ext {
-    baseUrl = 'https://todomvc4tasj.herokuapp.com'
+    systemProperties System.getProperties()
 }
