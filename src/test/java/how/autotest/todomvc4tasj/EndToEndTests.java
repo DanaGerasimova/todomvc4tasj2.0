@@ -3,16 +3,19 @@ package how.autotest.todomvc4tasj;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import how.autotest.todomvc4tasj.common.selenide.Action;
+import how.autotest.todomvc4tasj.testconfigs.BaseTest;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import static com.codeborne.selenide.CollectionCondition.exactTexts;
 import static com.codeborne.selenide.Condition.*;
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.$$;
+import static com.codeborne.selenide.Selenide.*;
 
-public class EndToEndTests extends AtTodoMvcWithClearedStorageBeforeEachTest {
+public class EndToEndTests extends BaseTest {
     @Test
     void todoListBasicOperations(){
+        openPage();
+
         add("a","b","c");
         todosShouldBe("a","b","c");
 
@@ -28,6 +31,8 @@ public class EndToEndTests extends AtTodoMvcWithClearedStorageBeforeEachTest {
     }
     @Test
     void filtersTasks() {
+        openPage();
+
         add("a", "b", "c");
 
         toggle("b");
@@ -42,6 +47,12 @@ public class EndToEndTests extends AtTodoMvcWithClearedStorageBeforeEachTest {
     }
     private final SelenideElement todoNew = $("#new-todo");
     private final ElementsCollection todoList = $$("#todo-list>li");
+    public void openPage() {
+        open("/");
+        clearBrowserLocalStorage();
+        Wait().until(ExpectedConditions.jsReturnsValue(
+                "return $._data($('#new-todo').get(0), 'events').hasOwnProperty('keyup');"));
+    }
     private void add(String... texts) {
         for (String text: texts) {
             todoNew.append(text).pressEnter();
