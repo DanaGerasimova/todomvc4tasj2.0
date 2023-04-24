@@ -14,7 +14,7 @@ import static com.codeborne.selenide.Selenide.*;
 public class EndToEndTests extends BaseTest {
     @Test
     void todoListBasicOperations(){
-        openPage();
+        givenAppOpened();
 
         add("a","b","c");
         todosShouldBe("a","b","c");
@@ -31,11 +31,9 @@ public class EndToEndTests extends BaseTest {
     }
     @Test
     void filtersTasks() {
-        openPage();
-
-        add("a", "b", "c");
-
+        givenAppOpenedWith("a", "b", "c");
         toggle("b");
+
         filterByCompleted();
         todosShouldBe("b");
 
@@ -47,11 +45,15 @@ public class EndToEndTests extends BaseTest {
     }
     private final SelenideElement todoNew = $("#new-todo");
     private final ElementsCollection todoList = $$("#todo-list>li");
-    public void openPage() {
+    public void givenAppOpened() {
         open("/");
         clearBrowserLocalStorage();
         Wait().until(ExpectedConditions.jsReturnsValue(
                 "return $._data($('#new-todo').get(0), 'events').hasOwnProperty('keyup');"));
+    }
+    public void givenAppOpenedWith(String... texts){
+        givenAppOpened();
+        add(texts);
     }
     private void add(String... texts) {
         for (String text: texts) {
