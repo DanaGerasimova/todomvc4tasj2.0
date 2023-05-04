@@ -1,6 +1,5 @@
 package how.autotest.todomvc4tasj;
 
-import com.codeborne.selenide.CollectionCondition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import how.autotest.todomvc4tasj.common.selenide.Action;
@@ -9,9 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import static com.codeborne.selenide.CollectionCondition.exactTexts;
+import static com.codeborne.selenide.CollectionCondition.size;
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
-import static com.codeborne.selenide.WebDriverConditions.url;
 
 public class EndToEndTests extends BaseTest {
     @Test
@@ -32,7 +31,7 @@ public class EndToEndTests extends BaseTest {
         todosShouldBe("a");
     }
     @Test
-    void filtersTasks() {
+    void filtersTodos() {
         givenAppOpenedWith("a", "b", "c");
         toggle("b");
 
@@ -46,152 +45,199 @@ public class EndToEndTests extends BaseTest {
         todosShouldBe("a","b","c");
     }
     @Test
-    void checkEditTodoByClick(){
-        givenAppOpenedWith("a");
-
-        editByClick("a","a edited");
-        todosShouldBe("a edited");
-    }
-    @Test
-    void checkTrimTodo(){
-        givenAppOpenedWith("  a test   ");
-
-        todosShouldBe("a test");
-    }
-    @Test
-    void checkControlElementsHidingWhileEdit(){
-        givenAppOpenedWith("a");
-
-        todoDoubleClick("a");
-        toggleCheckBox("a").shouldNotBe(visible);
-        deleteBtn("a").shouldNotBe(visible);
-    }
-    @Test
-    void checkTodoDeleteButtonShow(){
-        givenAppOpenedWith("a");
-
-        toggleCheckBox("a").shouldBe(visible).shouldBe(enabled).hover();
-        deleteBtn("a").shouldBe(visible);
-    }
-    @Test
-    void checkDeleteEmptyStringTodo(){
-        givenAppOpenedWith("a");
-
-        add("");
-        todosShouldBe("a");
-    }
-    @Test
-    void checkEditSelectedTodoByDoubleClick(){
-        givenAppOpenedWith("a");
-
-        toggle("a");
-        edit("a","a edited");
-        toggleCheckBox("a edited").shouldBe(checked);
-    }
-    @Test
-    void checkTodoCountNotVisible(){
+    void noTodosOnFreshOpen(){
         givenAppOpened();
 
-        todoCount.shouldNotBe(visible);
-    }
-    @Test
-    void checkAddedTodoCount(){
-        givenAppOpenedWith("a");
+        // WHEN add nothing
 
-        todoCount.shouldHave(text("1 item left"));
+        todosShouldBeEmpty();
+        footerIsHidden();
     }
     @Test
-    void checkSeveralAddedTodoCount(){
+    void addFirstTodo(){
+        givenAppOpened();
+
+        add("a");
+
+        todosShouldBe("a");
+        itemsLeftShouldBe(1);
+        footerIsVisible();
+    }
+    @Test
+    void addManyTodos(){
+        givenAppOpened();
+
+        add("a","b","c");
+
+        todosShouldBe("a","b","c");
+        itemsLeftShouldBe(3);
+    }
+    @Test
+    void toggleTodo(){
         givenAppOpenedWith("a","b","c");
 
-        todoCount.shouldHave(text("3 items left"));
+        toggle("b");
+
+        toggleCheckBox("b").shouldBe(selected);
+        completedTodosShouldBe("b");
+        activeTodosShouldBe("a","c");
+        itemsLeftShouldBe(2);
     }
     @Test
-    void checkClearCompletedBtnNotVisible(){
+    void clearCompletedTodos(){
+        givenAppOpenedWith("a","b","c");
+        toggle("b");
+
+        clearCompleted();
+
+        todosShouldBe("a","c");
+        itemsLeftShouldBe(2);
+    }
+    @Test
+    void clearCompletedAllTodosLeft(){
+        givenAppOpenedWith("a","b","c");
+        toggleAll();
+
+        clearCompleted();
+
+        todosShouldBeEmpty();
+        footerIsHidden();
+    }
+    @Test
+    void filterByCompletedTodos(){
+        givenAppOpenedWith("a","b","c");
+        toggle("b");
+
+        filterByCompleted();
+
+        todosShouldBe("b");
+        itemsLeftShouldBe(2);
+    }
+    @Test
+    void filterByActiveTodos(){
+        givenAppOpenedWith("a","b","c");
+        toggle("b");
+
+        filterByActive();
+
+        todosShouldBe("a","c");
+        itemsLeftShouldBe(2);
+    }
+    @Test
+    void filterByAllTodos(){
+        givenAppOpenedWith("a","b","c");
+        toggle("b");
+
+        filterByAll();
+
+        todosShouldBe("a","b","c");
+        itemsLeftShouldBe(2);
+    }
+    @Test
+    void cancelEditTodo(){
         givenAppOpenedWith("a","b","c");
 
-        clearCompleted.shouldNotBe(visible);
+        cancelEdit("b", "b edited");
+
+        todosShouldBe("a","b","c");
+        itemsLeftShouldBe(3);
     }
     @Test
-    public void checkDeleteTodoByEnterEmptyString(){
+    void editTodoByPressEnter(){
+        givenAppOpenedWith("a","b","c");
+
+        edit("b","b edited");
+
+        todosShouldBe("a","b edited","c");
+        itemsLeftShouldBe(3);
+    }
+    @Test
+    void editTodoByPressTab(){
+        givenAppOpenedWith("a","b","c");
+
+        editByTab("b","b edited");
+
+        todosShouldBe("a","b edited","c");
+        itemsLeftShouldBe(3);
+    }
+    @Test
+    void deleteTodoByEnterEmptyString(){
         givenAppOpenedWith("a","b","c");
 
         edit("b","");
+
         todosShouldBe("a","c");
+        itemsLeftShouldBe(2);
     }
     @Test
-    void uncheckCompletedTodo(){
-        givenAppOpenedWith("a","b");
+    void untoggleCompletedTodo(){
+        givenAppOpenedWith("a","b","c");
+        toggle("b");
 
         toggle("b");
-        toggleCheckBox("b").shouldBe(selected);
-        completedTodosShouldBe("b");
-        activeTodosShouldBe("a");
 
-        toggle("b");
         toggleCheckBox("b").shouldNotBe(selected);
-        activeTodosShouldBe("a","b");
-    }
-    @Test
-    void checkCompletedAllTodos(){
-        givenAppOpenedWith("a","b","c");
-
-        toggleAll();
-        completedTodosShouldBe("a","b","c");
-    }
-    @Test
-    void uncheckCompletedAllTodos(){
-        givenAppOpenedWith("a","b","c");
-
-        toggleAll();
-        completedTodosShouldBe("a","b","c");
-
-        toggleAll();
+        completedTodosShouldBeEmpty();
         activeTodosShouldBe("a","b","c");
+        itemsLeftShouldBe(3);
     }
     @Test
-    void checkStaticElements(){
-        givenAppOpened();
+    void completeAllTodos(){
+        givenAppOpenedWith("a","b","c");
 
-        header.shouldHave(text("todos"));
+        toggleAll();
 
-        $$("#info>p")
-                .shouldHave(CollectionCondition.exactTexts(
-                        "Double-click to edit a todo",
-                        "Created by Mikael Karon",
-                        "Part of TodoMVC"));
-
-        todoNew.shouldHave(attribute("placeholder",
-                "What needs to be done?"));
+        completedTodosShouldBe("a","b","c");
+        activeTodosShouldBeEmpty();
+        itemsLeftShouldBe(0);
     }
     @Test
-    void checkNewTodoUnFocus(){
-        givenAppOpened();
+    void completeAllTodosWithSomeCompleted(){
+        givenAppOpenedWith("a","b","c");
+        toggle("b");
 
-        todoNew.click();
-        todoNew.shouldBe(focused).shouldBe(editable);
-        header.click();
-        todoNew.shouldBe(visible).shouldNotBe(focused);
+        toggleAll();
+
+        completedTodosShouldBe("a","b","c");
+        activeTodosShouldBeEmpty();
+        itemsLeftShouldBe(0);
     }
     @Test
-    void checkMikaelKaronLink(){
-        givenAppOpened();
+    void uncompleteAllTodos(){
+        givenAppOpenedWith("a","b","c");
+        toggleAll();
 
-        $("a[href='https://github.com/mikaelkaron']").shouldBe(visible).shouldBe(enabled).click();
-        webdriver().shouldHave(url("https://github.com/mikaelkaron"));
+        toggleAll();
+
+        completedTodosShouldBeEmpty();
+        activeTodosShouldBe("a","b","c");
+        itemsLeftShouldBe(3);
     }
     @Test
-    void checkTodoMvcLink(){
-        givenAppOpened();
+    void deleteTodo(){
+        givenAppOpenedWith("a","b","c");
 
-        $("a[href='http://todomvc.com']").shouldBe(visible).shouldBe(enabled).click();
-        webdriver().shouldHave(url("https://todomvc.com/"));
+        delete("b");
+
+        todosShouldBe("a","c");
+        itemsLeftShouldBe(2);
+    }
+    @Test
+    void deleteLastTodo(){
+        givenAppOpenedWith("a");
+
+        delete("a");
+
+        todosShouldBeEmpty();
+        footerIsHidden();
     }
     private final SelenideElement todoNew = $("#new-todo");
-    private final SelenideElement todoCount = $("#todo-count");
+    private final SelenideElement itemsLeft = $("#todo-count>strong");
     private final ElementsCollection todoList = $$("#todo-list>li");
+    private final ElementsCollection activeTodoList = todoList.filterBy(cssClass("active"));
+    private final ElementsCollection completedTodoList = todoList.filterBy(cssClass("completed"));
     private final SelenideElement clearCompleted = $("#clear-completed");
-    private final SelenideElement header = $("#header h1");
+    private final SelenideElement footer = $("#footer");
     public void givenAppOpened() {
         open("/");
         clearBrowserLocalStorage();
@@ -221,21 +267,23 @@ public class EndToEndTests extends BaseTest {
         return todoList.findBy(cssClass("editing")).$(".edit")
                 .execute(Action.JS.setValue(textToAdd));
     }
-    private void startEditWithoutElementReturn(String text, String textToAdd){
-        startEdit(text, textToAdd);
-    }
     private void edit(String text, String textToAdd) {
         startEdit(text, textToAdd).pressEnter();
     }
-    private void editByClick(String text, String textToAdd) {
-        startEditWithoutElementReturn(text, textToAdd);
-        header.click();
-    }
-    private void completedTodosShouldBe(String... texts){
-        $$("#todo-list .completed").shouldHave(exactTexts(texts));
+    private void editByTab(String text, String textToAdd) {
+        startEdit(text, textToAdd).pressTab();
     }
     private void activeTodosShouldBe(String... texts){
-        $$("#todo-list .active").shouldHave(exactTexts(texts));
+        activeTodoList.shouldHave(exactTexts(texts));
+    }
+    private void activeTodosShouldBeEmpty(){
+        activeTodoList.shouldHave(size(0));
+    }
+    private void completedTodosShouldBe(String... texts){
+        completedTodoList.shouldHave(exactTexts(texts));
+    }
+    private void completedTodosShouldBeEmpty(){
+        completedTodoList.shouldHave(size(0));
     }
     private void cancelEdit(String text, String textToAdd) {
         startEdit(text, textToAdd).pressEscape();
@@ -243,14 +291,11 @@ public class EndToEndTests extends BaseTest {
     private void clearCompleted(){
         clearCompleted.click();
     }
-    private SelenideElement toggleCheckBox(String text){
+    SelenideElement toggleCheckBox(String text){
         return todoByText(text).$(".toggle");
     }
     private void toggle(String text){
         toggleCheckBox(text).click();
-    }
-    private SelenideElement deleteBtn(String text){
-        return todoByText(text).$(".destroy");
     }
     private void delete(String text){
         todoByText(text).hover().$(".destroy").click();
@@ -267,5 +312,17 @@ public class EndToEndTests extends BaseTest {
     }
     private void toggleAll(){
         $("#toggle-all").shouldBe(enabled).click();
+    }
+    private void itemsLeftShouldBe(Number number){
+        itemsLeft.shouldHave(exactText(number.toString()));
+    }
+    private void todosShouldBeEmpty(){
+        todoList.shouldHave(size(0));
+    }
+    private void footerIsVisible(){
+        footer.shouldBe(visible);
+    }
+    private void footerIsHidden(){
+        footer.shouldNotBe(visible);
     }
 }
