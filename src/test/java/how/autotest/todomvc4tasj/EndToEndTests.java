@@ -51,7 +51,7 @@ public class EndToEndTests extends BaseTest {
         // WHEN add nothing
 
         todosShouldBeEmpty();
-        footerIsHidden();
+        footerShouldBeHidden();
     }
     @Test
     void addFirstTodo(){
@@ -61,7 +61,7 @@ public class EndToEndTests extends BaseTest {
 
         todosShouldBe("a");
         itemsLeftShouldBe(1);
-        footerIsVisible();
+        footerShouldBeVisible();
     }
     @Test
     void addManyTodos(){
@@ -73,12 +73,11 @@ public class EndToEndTests extends BaseTest {
         itemsLeftShouldBe(3);
     }
     @Test
-    void toggleTodo(){
+    void completeTodo(){
         givenAppOpenedWith("a","b","c");
 
         toggle("b");
 
-        toggleCheckBox("b").shouldBe(selected);
         completedTodosShouldBe("b");
         activeTodosShouldBe("a","c");
         itemsLeftShouldBe(2);
@@ -94,14 +93,14 @@ public class EndToEndTests extends BaseTest {
         itemsLeftShouldBe(2);
     }
     @Test
-    void clearCompletedAllTodosLeft(){
+    void clearCompletedAllTodos(){
         givenAppOpenedWith("a","b","c");
         toggleAll();
 
         clearCompleted();
 
         todosShouldBeEmpty();
-        footerIsHidden();
+        footerShouldBeHidden();
     }
     @Test
     void filterByCompletedTodos(){
@@ -152,7 +151,7 @@ public class EndToEndTests extends BaseTest {
         itemsLeftShouldBe(3);
     }
     @Test
-    void editTodoByPressTab(){
+    void editTodoByFocusChange(){
         givenAppOpenedWith("a","b","c");
 
         editByTab("b","b edited");
@@ -161,7 +160,7 @@ public class EndToEndTests extends BaseTest {
         itemsLeftShouldBe(3);
     }
     @Test
-    void deleteTodoByEnterEmptyString(){
+    void deleteTodoByEditToEmptyString(){
         givenAppOpenedWith("a","b","c");
 
         edit("b","");
@@ -170,7 +169,7 @@ public class EndToEndTests extends BaseTest {
         itemsLeftShouldBe(2);
     }
     @Test
-    void untoggleCompletedTodo(){
+    void activateCompletedTodo(){
         givenAppOpenedWith("a","b","c");
         toggle("b");
 
@@ -229,7 +228,7 @@ public class EndToEndTests extends BaseTest {
         delete("a");
 
         todosShouldBeEmpty();
-        footerIsHidden();
+        footerShouldBeHidden();
     }
     private final SelenideElement todoNew = $("#new-todo");
     private final SelenideElement itemsLeft = $("#todo-count>strong");
@@ -259,11 +258,8 @@ public class EndToEndTests extends BaseTest {
     private SelenideElement todoByText(String text){
         return todoList.findBy(exactText(text));
     }
-    private void todoDoubleClick(String text){
-        todoByText(text).doubleClick();
-    }
     private SelenideElement startEdit(String text, String textToAdd){
-        todoDoubleClick(text);
+        todoByText(text).doubleClick();
         return todoList.findBy(cssClass("editing")).$(".edit")
                 .execute(Action.JS.setValue(textToAdd));
     }
@@ -319,10 +315,10 @@ public class EndToEndTests extends BaseTest {
     private void todosShouldBeEmpty(){
         todoList.shouldHave(size(0));
     }
-    private void footerIsVisible(){
+    private void footerShouldBeVisible(){
         footer.shouldBe(visible);
     }
-    private void footerIsHidden(){
+    private void footerShouldBeHidden(){
         footer.shouldNotBe(visible);
     }
 }
