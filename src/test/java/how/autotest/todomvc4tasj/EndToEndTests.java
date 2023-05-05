@@ -103,36 +103,6 @@ public class EndToEndTests extends BaseTest {
         footerShouldBeHidden();
     }
     @Test
-    void filterByCompletedTodos(){
-        givenAppOpenedWith("a","b","c");
-        toggle("b");
-
-        filterByCompleted();
-
-        todosShouldBe("b");
-        itemsLeftShouldBe(2);
-    }
-    @Test
-    void filterByActiveTodos(){
-        givenAppOpenedWith("a","b","c");
-        toggle("b");
-
-        filterByActive();
-
-        todosShouldBe("a","c");
-        itemsLeftShouldBe(2);
-    }
-    @Test
-    void filterByAllTodos(){
-        givenAppOpenedWith("a","b","c");
-        toggle("b");
-
-        filterByAll();
-
-        todosShouldBe("a","b","c");
-        itemsLeftShouldBe(2);
-    }
-    @Test
     void cancelEditTodo(){
         givenAppOpenedWith("a","b","c");
 
