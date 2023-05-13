@@ -7,13 +7,13 @@ import org.junit.jupiter.api.Test;
 public class OperationsOnCompletedFilterTest extends BaseTest {
     private TodoMvcPage todoMvc = new TodoMvcPage();
     @Test
-    void noCompletedTodos(){
+    void activeAll(){
         todoMvc.givenOpenedWith("a","b","c");
         todoMvc.filterByCompleted();
 
         // WHEN add nothing
 
-        todoMvc.completedFilteredTodosShouldBeEmpty();
+        todoMvc.todosShouldBeEmpty();
         todoMvc.itemsLeftShouldBe(3);
     }
     @Test
@@ -23,7 +23,7 @@ public class OperationsOnCompletedFilterTest extends BaseTest {
 
         todoMvc.add("d");
 
-        todoMvc.completedFilteredTodosShouldBeEmpty();
+        todoMvc.todosShouldBeEmpty();
         todoMvc.itemsLeftShouldBe(4);
     }
     @Test
@@ -32,11 +32,11 @@ public class OperationsOnCompletedFilterTest extends BaseTest {
 
         todoMvc.toggle("b");
 
-        todoMvc.completedFilteredTodosShouldBe("a","c");
+        todoMvc.todosShouldBe("a","c");
         todoMvc.itemsLeftShouldBe(1);
     }
     @Test
-    void editCompletedTodoByPressEnter(){
+    void editCompletedTodo(){
         todoMvc.givenOpenedWithAllCompletedTodosOnCompletedFilter("a","b","c");
 
         todoMvc.edit("b","b edited");
@@ -61,7 +61,7 @@ public class OperationsOnCompletedFilterTest extends BaseTest {
 
         todoMvc.toggleAll();
 
-        todoMvc.completedFilteredTodosShouldBe("a","b","c");
+        todoMvc.todosShouldBe("a","b","c");
         todoMvc.itemsLeftShouldBe(0);
     }
     @Test
@@ -72,7 +72,7 @@ public class OperationsOnCompletedFilterTest extends BaseTest {
 
         todoMvc.delete("b");
 
-        todoMvc.completedFilteredTodosShouldBeEmpty();
+        todoMvc.todosShouldBeEmpty();
         todoMvc.itemsLeftShouldBe(1);
     }
 }

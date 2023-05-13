@@ -7,24 +7,43 @@ import org.junit.jupiter.api.Test;
 public class OperationsOnActiveFilterTest extends BaseTest {
     private TodoMvcPage todoMvc = new TodoMvcPage();
     @Test
-    void noActiveTodos(){
+    void completedAll(){
         todoMvc.givenOpenedWith("a","b","c");
         todoMvc.toggleAll();
         todoMvc.filterByActive();
 
         // WHEN add nothing
 
-        todoMvc.activeFilteredTodosShouldBeEmpty();
+        todoMvc.todosShouldBeEmpty();
         todoMvc.itemsLeftShouldBe(0);
     }
     @Test
-    void completeTodo(){
+    void addFirstActiveTodo(){
         todoMvc.givenOpenedWith("a","b","c");
+        todoMvc.toggleAll();
         todoMvc.filterByActive();
+
+        todoMvc.add("d");
+
+        todoMvc.todosShouldBe("d");
+        todoMvc.itemsLeftShouldBe(1);
+    }
+    @Test
+    void editActiveTodo(){
+        todoMvc.givenOpenedWithAllActiveTodosOnActiveFilter("a","b","c");
+
+        todoMvc.edit("b","b edited");
+
+        todoMvc.todosShouldBe("a","b edited","c");
+        todoMvc.itemsLeftShouldBe(3);
+    }
+    @Test
+    void completeTodo(){
+        todoMvc.givenOpenedWithAllActiveTodosOnActiveFilter("a","b","c");
 
         todoMvc.toggle("b");
 
-        todoMvc.activeFilteredTodosShouldBe("a","c");
+        todoMvc.todosShouldBe("a","c");
         todoMvc.itemsLeftShouldBe(2);
     }
     @Test
@@ -35,7 +54,7 @@ public class OperationsOnActiveFilterTest extends BaseTest {
 
         todoMvc.toggleAll();
 
-        todoMvc.completedFilteredTodosShouldBeEmpty();
+        todoMvc.todosShouldBeEmpty();
         todoMvc.itemsLeftShouldBe(0);
     }
     @Test
@@ -46,7 +65,7 @@ public class OperationsOnActiveFilterTest extends BaseTest {
 
         todoMvc.delete("a");
 
-        todoMvc.activeFilteredTodosShouldBeEmpty();
+        todoMvc.todosShouldBeEmpty();
         todoMvc.itemsLeftShouldBe(0);
     }
 }

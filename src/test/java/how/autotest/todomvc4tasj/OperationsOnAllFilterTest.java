@@ -92,7 +92,7 @@ public class OperationsOnAllFilterTest extends BaseTest {
         todoMvc.itemsLeftShouldBe(3);
     }
     @Test
-    void completeAllTodos(){ // toggle
+    void completeAllTodos(){
         todoMvc.givenOpenedWith("a","b","c");
 
         todoMvc.toggleAll();
@@ -152,7 +152,7 @@ public class OperationsOnAllFilterTest extends BaseTest {
         todoMvc.itemsLeftShouldBe(2);
     }
     @Test
-    void clearCompletedAllTodos(){ // toggle
+    void clearCompletedAllTodos(){
         todoMvc.givenOpenedWith("a","b","c");
         todoMvc.toggleAll();
 

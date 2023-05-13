@@ -18,9 +18,6 @@ public class TodoMvcPage {
     private final ElementsCollection todoList = $$("#todo-list>li");
     private final ElementsCollection activeTodoList = todoList.filterBy(cssClass("active"));
     private final ElementsCollection completedTodoList = todoList.filterBy(cssClass("completed"));
-    private final ElementsCollection filterActive = $$(".filter-active .active");
-    private final ElementsCollection filterCompleted = $$(".filter-completed .completed");
-    private final SelenideElement clearCompleted = $("#clear-completed");
     private final SelenideElement footer = $("#footer");
     public void givenOpened() {
         open("/");
@@ -31,6 +28,10 @@ public class TodoMvcPage {
     public void givenOpenedWith(String... texts){
         givenOpened();
         add(texts);
+    }
+    public void givenOpenedWithAllActiveTodosOnActiveFilter(String... texts){
+        givenOpenedWith(texts);
+        filterByActive();
     }
     public void givenOpenedWithAllCompletedTodosOnCompletedFilter(String... texts){
         givenOpenedWith(texts);
@@ -75,7 +76,7 @@ public class TodoMvcPage {
         startEdit(text, textToAdd).pressEscape();
     }
     public void clearCompleted(){
-        clearCompleted.click();
+        $("#clear-completed").click();
     }
     public SelenideElement toggleCheckBox(String text){
         return todoByText(text).$(".toggle");
@@ -103,24 +104,12 @@ public class TodoMvcPage {
         itemsLeft.shouldHave(exactText(number.toString()));
     }
     public void todosShouldBeEmpty(){
-        todoList.shouldHave(size(0));
+        todoList.filterBy(visible).shouldHave(size(0));
     }
     public void footerShouldBeVisible(){
         footer.shouldBe(visible);
     }
     public void footerShouldBeHidden(){
         footer.shouldNotBe(visible);
-    }
-    public void completedFilteredTodosShouldBeEmpty(){
-        filterCompleted.shouldHave(size(0));
-    }
-    public void completedFilteredTodosShouldBe(String... texts){
-        filterCompleted.shouldHave(exactTexts(texts));
-    }
-    public void activeFilteredTodosShouldBeEmpty(){
-        filterActive.shouldHave(size(0));
-    }
-    public void activeFilteredTodosShouldBe(String... texts){
-        filterActive.shouldHave(exactTexts(texts));
     }
 }
