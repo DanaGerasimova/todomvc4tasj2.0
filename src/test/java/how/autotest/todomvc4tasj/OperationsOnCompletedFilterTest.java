@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 public class OperationsOnCompletedFilterTest extends BaseTest {
     private TodoMvcPage todoMvc = new TodoMvcPage();
     @Test
-    void activeAll(){
+    void noTodosWhenAllActive(){
         todoMvc.givenOpenedWith("a","b","c");
         todoMvc.filterByCompleted();
 

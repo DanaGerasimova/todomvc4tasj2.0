@@ -18,19 +18,18 @@ public class OperationsOnActiveFilterTest extends BaseTest {
         todoMvc.itemsLeftShouldBe(0);
     }
     @Test
-    void addFirstActiveTodo(){
-        todoMvc.givenOpenedWith("a","b","c");
-        todoMvc.toggleAll();
-        todoMvc.filterByActive();
+    void addFirstActive(){
+        todoMvc.givenOpenedOnActiveFilterWith("a","b","c");
 
+        todoMvc.toggleAll();
         todoMvc.add("d");
 
         todoMvc.todosShouldBe("d");
         todoMvc.itemsLeftShouldBe(1);
     }
     @Test
-    void editActiveTodo(){
-        todoMvc.givenOpenedWithAllActiveTodosOnActiveFilter("a","b","c");
+    void editActive(){
+        todoMvc.givenOpenedOnActiveFilterWith("a","b","c");
 
         todoMvc.edit("b","b edited");
 
@@ -38,8 +37,8 @@ public class OperationsOnActiveFilterTest extends BaseTest {
         todoMvc.itemsLeftShouldBe(3);
     }
     @Test
-    void completeTodo(){
-        todoMvc.givenOpenedWithAllActiveTodosOnActiveFilter("a","b","c");
+    void complete(){
+        todoMvc.givenOpenedOnActiveFilterWith("a","b","c");
 
         todoMvc.toggle("b");
 
@@ -47,7 +46,7 @@ public class OperationsOnActiveFilterTest extends BaseTest {
         todoMvc.itemsLeftShouldBe(2);
     }
     @Test
-    void completeAllTodosWithSomeCompleted(){
+    void completeAllWithSomeCompleted(){
         todoMvc.givenOpenedWith("a","b","c");
         todoMvc.toggle("b");
         todoMvc.filterByActive();
@@ -58,7 +57,7 @@ public class OperationsOnActiveFilterTest extends BaseTest {
         todoMvc.itemsLeftShouldBe(0);
     }
     @Test
-    void deleteLastActiveTodo(){
+    void deleteLastActive(){
         todoMvc.givenOpenedWith("a","b");
         todoMvc.toggle("b");
         todoMvc.filterByActive();

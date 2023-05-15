@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 public class EndToEndTests extends BaseTest {
     private TodoMvcPage todoMvc = new TodoMvcPage();
     @Test
-    void todoListBasicOperations(){
+    void basicOperations(){
         todoMvc.givenOpened();
 
         todoMvc.add("a","b","c");
@@ -24,7 +24,7 @@ public class EndToEndTests extends BaseTest {
         todoMvc.todosShouldBe("a");
     }
     @Test
-    void filtersTodos() {
+    void filters() {
         todoMvc.givenOpenedWith("a", "b", "c");
         todoMvc.toggle("b");
 

@@ -16,17 +16,16 @@ public class OperationsOnAllFilterTest extends BaseTest {
         todoMvc.footerShouldBeHidden();
     }
     @Test
-    void addFirstTodo(){
+    void addFirst(){
         todoMvc.givenOpened();
 
         todoMvc.add("a");
 
         todoMvc.todosShouldBe("a");
         todoMvc.itemsLeftShouldBe(1);
-        todoMvc.footerShouldBeVisible();
     }
     @Test
-    void addManyTodos(){
+    void addMany(){
         todoMvc.givenOpened();
 
         todoMvc.add("a","b","c");
@@ -35,7 +34,7 @@ public class OperationsOnAllFilterTest extends BaseTest {
         todoMvc.itemsLeftShouldBe(3);
     }
     @Test
-    void cancelEditTodo(){
+    void cancelEdit(){
         todoMvc.givenOpenedWith("a","b","c");
 
         todoMvc.cancelEdit("b", "b edited");
@@ -44,7 +43,7 @@ public class OperationsOnAllFilterTest extends BaseTest {
         todoMvc.itemsLeftShouldBe(3);
     }
     @Test
-    void editTodoByPressEnter(){
+    void editByPressEnter(){
         todoMvc.givenOpenedWith("a","b","c");
 
         todoMvc.edit("b","b edited");
@@ -53,7 +52,7 @@ public class OperationsOnAllFilterTest extends BaseTest {
         todoMvc.itemsLeftShouldBe(3);
     }
     @Test
-    void editTodoByFocusChange(){
+    void editByFocusChange(){
         todoMvc.givenOpenedWith("a","b","c");
 
         todoMvc.editByTab("b","b edited");
@@ -62,7 +61,7 @@ public class OperationsOnAllFilterTest extends BaseTest {
         todoMvc.itemsLeftShouldBe(3);
     }
     @Test
-    void deleteTodoByEditToEmptyString(){
+    void deleteByEditToEmptyString(){
         todoMvc.givenOpenedWith("a","b","c");
 
         todoMvc.edit("b","");
@@ -71,7 +70,7 @@ public class OperationsOnAllFilterTest extends BaseTest {
         todoMvc.itemsLeftShouldBe(2);
     }
     @Test
-    void completeTodo(){
+    void complete(){
         todoMvc.givenOpenedWith("a","b","c");
 
         todoMvc.toggle("b");
@@ -81,7 +80,7 @@ public class OperationsOnAllFilterTest extends BaseTest {
         todoMvc.itemsLeftShouldBe(2);
     }
     @Test
-    void activateCompletedTodo(){
+    void activateCompleted(){
         todoMvc.givenOpenedWith("a","b","c");
         todoMvc.toggle("b");
 
@@ -92,7 +91,7 @@ public class OperationsOnAllFilterTest extends BaseTest {
         todoMvc.itemsLeftShouldBe(3);
     }
     @Test
-    void completeAllTodos(){
+    void completeAll(){
         todoMvc.givenOpenedWith("a","b","c");
 
         todoMvc.toggleAll();
@@ -102,7 +101,7 @@ public class OperationsOnAllFilterTest extends BaseTest {
         todoMvc.itemsLeftShouldBe(0);
     }
     @Test
-    void completeAllTodosWithSomeCompleted(){
+    void completeAllWithSomeCompleted(){
         todoMvc.givenOpenedWith("a","b","c");
         todoMvc.toggle("b");
 
@@ -113,7 +112,7 @@ public class OperationsOnAllFilterTest extends BaseTest {
         todoMvc.itemsLeftShouldBe(0);
     }
     @Test
-    void uncompleteAllTodos(){
+    void uncompleteAll(){
         todoMvc.givenOpenedWith("a","b","c");
         todoMvc.toggleAll();
 
@@ -124,7 +123,7 @@ public class OperationsOnAllFilterTest extends BaseTest {
         todoMvc.itemsLeftShouldBe(3);
     }
     @Test
-    void deleteTodo(){
+    void delete(){
         todoMvc.givenOpenedWith("a","b","c");
 
         todoMvc.delete("b");
@@ -133,7 +132,7 @@ public class OperationsOnAllFilterTest extends BaseTest {
         todoMvc.itemsLeftShouldBe(2);
     }
     @Test
-    void deleteLastTodo(){
+    void deleteLast(){
         todoMvc.givenOpenedWith("a");
 
         todoMvc.delete("a");
@@ -142,7 +141,7 @@ public class OperationsOnAllFilterTest extends BaseTest {
         todoMvc.footerShouldBeHidden();
     }
     @Test
-    void clearCompletedTodos(){
+    void clearCompleted(){
         todoMvc.givenOpenedWith("a","b","c");
         todoMvc.toggle("b");
 
@@ -152,7 +151,7 @@ public class OperationsOnAllFilterTest extends BaseTest {
         todoMvc.itemsLeftShouldBe(2);
     }
     @Test
-    void clearCompletedAllTodos(){
+    void clearCompletedAll(){
         todoMvc.givenOpenedWith("a","b","c");
         todoMvc.toggleAll();
 

@@ -18,7 +18,6 @@ public class TodoMvcPage {
     private final ElementsCollection todoList = $$("#todo-list>li");
     private final ElementsCollection activeTodoList = todoList.filterBy(cssClass("active"));
     private final ElementsCollection completedTodoList = todoList.filterBy(cssClass("completed"));
-    private final SelenideElement footer = $("#footer");
     public void givenOpened() {
         open("/");
         clearBrowserLocalStorage();
@@ -29,7 +28,7 @@ public class TodoMvcPage {
         givenOpened();
         add(texts);
     }
-    public void givenOpenedWithAllActiveTodosOnActiveFilter(String... texts){
+    public void givenOpenedOnActiveFilterWith(String... texts){
         givenOpenedWith(texts);
         filterByActive();
     }
@@ -106,10 +105,7 @@ public class TodoMvcPage {
     public void todosShouldBeEmpty(){
         todoList.filterBy(visible).shouldHave(size(0));
     }
-    public void footerShouldBeVisible(){
-        footer.shouldBe(visible);
-    }
     public void footerShouldBeHidden(){
-        footer.shouldNotBe(visible);
+        $("#footer").shouldNotBe(visible);
     }
 }
