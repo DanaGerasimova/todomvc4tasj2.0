@@ -18,8 +18,4 @@ public class ListItem {
         this.startEdit(textToAdd).pressEnter();
         return this;
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 0a4a1d2 (extract ListItem widget)
