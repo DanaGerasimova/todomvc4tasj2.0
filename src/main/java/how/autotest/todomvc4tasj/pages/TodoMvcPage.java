@@ -2,13 +2,15 @@ package how.autotest.todomvc4tasj.pages;
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
-import how.autotest.todomvc4tasj.controls.ListItem;
+import how.autotest.todomvc4tasj.common.selenide.Action;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import static com.codeborne.selenide.CollectionCondition.exactTexts;
 import static com.codeborne.selenide.CollectionCondition.size;
 import static com.codeborne.selenide.Condition.*;
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.Selenide.$;
 
 public class TodoMvcPage {
     private final SelenideElement todoNew = $("#new-todo");
@@ -46,14 +48,19 @@ public class TodoMvcPage {
     public SelenideElement todoByText(String text){
         return todoList.findBy(exactText(text));
     }
-    public void activeTodosShouldBe(String... texts){
-        activeTodoList.shouldHave(exactTexts(texts));
+    public SelenideElement startEdit(String text, String textToAdd){
+        todoByText(text).doubleClick();
+        return todoList.findBy(cssClass("editing")).$(".edit")
+                .execute(Action.JS.setValue(textToAdd));
+    }
+    public void edit(String text, String textToAdd) {
+        startEdit(text, textToAdd).pressEnter();
     }
     public void editByTab(String text, String textToAdd) {
-        todo(text).startEdit(textToAdd).pressTab();
+        startEdit(text, textToAdd).pressTab();
     }
-    public void cancelEdit(String text, String textToAdd) {
-        todo(text).startEdit(textToAdd).pressEscape();
+    public void activeTodosShouldBe(String... texts){
+        activeTodoList.shouldHave(exactTexts(texts));
     }
     public void activeTodosShouldBeEmpty(){
         activeTodoList.shouldHave(size(0));
@@ -63,6 +70,9 @@ public class TodoMvcPage {
     }
     public void completedTodosShouldBeEmpty(){
         completedTodoList.shouldHave(size(0));
+    }
+    public void cancelEdit(String text, String textToAdd) {
+        startEdit(text, textToAdd).pressEscape();
     }
     public void clearCompleted(){
         $("#clear-completed").click();
@@ -97,8 +107,5 @@ public class TodoMvcPage {
     }
     public void footerShouldBeHidden(){
         $("#footer").shouldNotBe(visible);
-    }
-    public ListItem todo(String text){
-        return new ListItem(this.todoList.findBy(exactText(text)));
     }
 }
