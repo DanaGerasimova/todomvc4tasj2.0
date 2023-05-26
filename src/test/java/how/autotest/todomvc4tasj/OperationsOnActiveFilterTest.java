@@ -31,7 +31,7 @@ public class OperationsOnActiveFilterTest extends BaseTest {
     void editActive(){
         todoMvc.givenOpenedOnActiveFilterWith("a","b","c");
 
-        todoMvc.edit("b","b edited");
+        todoMvc.todo("b").edit("b edited");
 
         todoMvc.todosShouldBe("a","b edited","c");
         todoMvc.itemsLeftShouldBe(3);

@@ -39,7 +39,7 @@ public class OperationsOnCompletedFilterTest extends BaseTest {
     void editCompletedTodo(){
         todoMvc.givenOpenedWithAllCompletedTodosOnCompletedFilter("a","b","c");
 
-        todoMvc.edit("b","b edited");
+        todoMvc.todo("b").edit("b edited");
 
         todoMvc.todosShouldBe("a","b edited","c");
         todoMvc.itemsLeftShouldBe(0);
