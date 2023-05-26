@@ -18,4 +18,8 @@ public class ListItem {
         this.startEdit(textToAdd).pressEnter();
         return this;
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> origin/master
