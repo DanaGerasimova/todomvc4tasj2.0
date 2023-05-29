@@ -46,7 +46,7 @@ public class OperationsOnAllFilterTest extends BaseTest {
     void editByPressEnter(){
         todoMvc.givenOpenedWith("a","b","c");
 
-        todoMvc.todo("b").edit("b edited");
+        todoMvc.edit("b","b edited");
 
         todoMvc.todosShouldBe("a","b edited","c");
         todoMvc.itemsLeftShouldBe(3);
@@ -64,7 +64,7 @@ public class OperationsOnAllFilterTest extends BaseTest {
     void deleteByEditToEmptyString(){
         todoMvc.givenOpenedWith("a","b","c");
 
-        todoMvc.todo("b").edit("");
+        todoMvc.edit("b","");
 
         todoMvc.todosShouldBe("a","c");
         todoMvc.itemsLeftShouldBe(2);

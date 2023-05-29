@@ -13,7 +13,7 @@ public class EndToEndTests extends BaseTest {
         todoMvc.add("a","b","c");
         todoMvc.todosShouldBe("a","b","c");
 
-        todoMvc.todo("c").edit("c edited");
+        todoMvc.edit("c","c edited");
         todoMvc.cancelEdit("c edited","c edited again");
 
         todoMvc.toggle("c edited");

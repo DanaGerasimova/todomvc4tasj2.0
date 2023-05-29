@@ -2,7 +2,7 @@ package how.autotest.todomvc4tasj.pages;
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
-import how.autotest.todomvc4tasj.controls.ListItem;
+import how.autotest.todomvc4tasj.controls.EditingLabel;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import static com.codeborne.selenide.CollectionCondition.exactTexts;
@@ -49,12 +49,6 @@ public class TodoMvcPage {
     public void activeTodosShouldBe(String... texts){
         activeTodoList.shouldHave(exactTexts(texts));
     }
-    public void editByTab(String text, String textToAdd) {
-        todo(text).startEdit(textToAdd).pressTab();
-    }
-    public void cancelEdit(String text, String textToAdd) {
-        todo(text).startEdit(textToAdd).pressEscape();
-    }
     public void activeTodosShouldBeEmpty(){
         activeTodoList.shouldHave(size(0));
     }
@@ -98,7 +92,16 @@ public class TodoMvcPage {
     public void footerShouldBeHidden(){
         $("#footer").shouldNotBe(visible);
     }
-    public ListItem todo(String text){
-        return new ListItem(this.todoList.findBy(exactText(text)));
+    public void edit(String text, String textToAdd) {
+        label(text).edit(textToAdd);
+    }
+    public void editByTab(String text, String textToAdd) {
+        label(text).editByTab(textToAdd);
+    }
+    public void cancelEdit(String text, String textToAdd) {
+        label(text).cancelEdit(textToAdd);
+    }
+    public EditingLabel label(String text){
+        return new EditingLabel(this.todoList.findBy(exactText(text)));
     }
 }
